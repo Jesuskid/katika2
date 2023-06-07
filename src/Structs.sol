@@ -12,7 +12,7 @@ struct WagerDetails{
     uint256 payout;
     uint256 startedAt;
     uint256 endsOn;
-    bool position;
+    uint8 position;
     bool isSettled;
     bool isCancelled;
 }
