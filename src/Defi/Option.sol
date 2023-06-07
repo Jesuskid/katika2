@@ -9,17 +9,17 @@ import "@chainlink/v0.6/interfaces/AggregatorV3Interface.sol";
 contract Wager {
     using SafeERC20 for IERC20;
     WhitelistedPool public pool;
-    
+
+    uint256 public constant Pr;  
+    uint256 public wagerId; 
+    uint256 public multiplier = 12000;
+    uint256 public constant PRECISION_BASE_DIVISOR = 1e4;
 
     mapping(address => Structs.TokenDetails) public tokenDetails;
     mapping(wagerId => Structs.WagerDetails) public wagerDetails;
     mapping(address=>mapping(address=>uint256)) public userBalances;
 
-    uint256 public multiplier = 1.2e18;
-
     mapping(address  token => address priceFeed) public priceFeeds;
-
-    uint256 public wagerId;
 
     enum Position {SHORT, LONG}
 
@@ -96,7 +96,7 @@ contract Wager {
 
         if(wager.position == SHORT){
             if(wager.priceOption < uint256(price)){
-                uint256 payout = (wager.amount * multiplier) / 1e18;
+                uint256 payout = (wager.amount * multiplier) / PRECISION_BASE_DIVISOR;
                 wager.payout = payout;
                 pool.transfer(wager.wagerToken, msg.sender, payout);
             }else{
@@ -104,7 +104,7 @@ contract Wager {
             }
         }else if(wager.position == LONG){
             if(wager.priceOption > uint256(price)){
-                uint256 payout = (wager.amount * multiplier) / 1e18;
+                uint256 payout = (wager.amount * multiplier) / PRECISION_BASE_DIVISOR;
                 wager.payout = payout;
                 //payfrom pool
                 pool.transfer(wager.wagerToken, msg.sender, payout);
